@@ -41,7 +41,7 @@ app.get("/latest-entry", (req, res) => {
 /*
 Defining POST Routes
 */
-app.post("/data", (req, res) => {
+app.post("/latest-entry", (req, res) => {
   // On POST request at /latest-entry, we set the keys of the projectData object with the corresponding values in the request body.
   const { temp, date, feeling } = req.body;
   projectData.temp = temp;
