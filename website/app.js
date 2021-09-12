@@ -67,11 +67,10 @@ const postLatestEntry = async (url, data) => {
 // An asynchronus function calling fetch function to send an HTTP GET Request to the node local server to fetch the latest entry and then update the page content.
 const setLatestEntry = async (url) => {
   const response = await fetch(url);
-  response.json().then(({ date, temp, feeling }) => {
-    document.getElementById("date").innerHTML = date;
-    document.getElementById("temp").innerHTML = `${temp} C`;
-    document.getElementById("content").innerHTML = feeling;
-  });
+  const { date, temp, feeling } = await response.json();
+  document.getElementById("date").innerHTML = date;
+  document.getElementById("temp").innerHTML = `${temp} C`;
+  document.getElementById("content").innerHTML = feeling;
 };
 
 // Event listener for click event on generate button
