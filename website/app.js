@@ -1,12 +1,13 @@
 /* Global Variables */
 
 // Create a new date instance dynamically with JS
-const d = new Date();
-const newDate = d.getMonth() + "-" + d.getDate() + "-" + d.getFullYear();
+const currentDate = new Date().toUTCString();
 
 const apiKey = "42066e6c434c983442adec9359e5ee6f";
 
 const baseURL = "https://api.openweathermap.org/data/2.5/weather";
+
+const tempUnit = "metric";
 
 /*
     USER INPUT VALIDATION METHODS
@@ -32,7 +33,46 @@ const isFormValid = (zipCode, feelings) => {
   return true;
 };
 
-// TODO: Create async functions for fetch api requests
+// An asynchronus function calling fetch function to send an HTTP GET request to OpenWeatherMap API
+const fetchWeatherData = async (baseURL, zip, apiKey) => {
+  const url = `${baseURL}?zip=${zip}&appid=${apiKey}&units=${tempUnit}`;
+  try {
+    const response = await fetch(url);
+    if (response.ok === false) {
+      // To handle errors and display them to the user by alert, we throw a custom error message
+      throw new Error(
+        "failed to fetch temperature from OpenWeatherMap API. Please ensure that the ZIP code is a legit US ZIP Code."
+      );
+    }
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    alert(err);
+  }
+};
+
+// An asynchronus function calling fetch function to send an HTTP POST Request to the node local server to set its latest entry.
+const postLatestEntry = async (url, data) => {
+  const response = fetch(url, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+  return response;
+};
+
+// An asynchronus function calling fetch function to send an HTTP GET Request to the node local server to fetch the latest entry and then update the page content.
+const setLatestEntry = async (url) => {
+  const response = await fetch(url);
+  response.json().then(({ date, temp, feeling }) => {
+    document.getElementById("date").innerHTML = date;
+    document.getElementById("temp").innerHTML = `${temp} C`;
+    document.getElementById("content").innerHTML = feeling;
+  });
+};
 
 // Event listener for click event on generate button
 document.getElementById("generate").addEventListener("click", () => {
@@ -44,5 +84,14 @@ document.getElementById("generate").addEventListener("click", () => {
     return;
   }
 
-  // TODO: Call async functions with promise chain
+  fetchWeatherData(baseURL, zip, apiKey).then((data) => {
+    const entry = {
+      temp: data.main.temp,
+      date: currentDate,
+      feeling: userFeelings
+    };
+    return postLatestEntry("/latest-entry", entry).then((data) => {
+      setLatestEntry("/latest-entry");
+    });
+  });
 });
