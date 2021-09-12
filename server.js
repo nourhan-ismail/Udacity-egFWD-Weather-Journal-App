@@ -29,3 +29,23 @@ app.use(express.static("website"));
 const server = app.listen(port, () => {
   console.log("Listening to localhost:" + port);
 });
+
+/* 
+Defining GET Routes
+*/
+app.get("/latest-entry", (req, res) => {
+  // On GET request at /latest-entry, we respond with projectData object in JSON format.
+  res.send(JSON.stringify(projectData));
+});
+
+/*
+Defining POST Routes
+*/
+app.post("/data", (req, res) => {
+  // On POST request at /latest-entry, we set the keys of the projectData object with the corresponding values in the request body.
+  const { temp, date, feeling } = req.body;
+  projectData.temp = temp;
+  projectData.date = date;
+  projectData.feeling = feeling;
+  res.status(201).send("Data added successfully.");
+});
