@@ -32,4 +32,11 @@ Practise simple server setup using node and express, and how to deal with Async 
 
 ## Instructions
 
-To run the web app, simply open the command prompt in the root path of the project and run 'npm start' or 'node server', then go to [localhost:8888](http://localhost:8888/).
+To run the web app:
+
+- Open the command prompt in the root path of the project do the following:
+
+1. run "npm install"
+2. run "npm start"
+
+- Open your favorite browser and launch [localhost:8888](http://localhost:8888/)
